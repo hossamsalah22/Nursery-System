@@ -9,14 +9,6 @@ server.use(cors());
 server.use(logger("dev"));
 
 server.use((require, result, next) => {
-	if (true) {
-		next();
-	} else {
-		next(new Error("User Not Authenticated"));
-	}
-});
-
-server.use((require, result, next) => {
 	result.status(404).json({ massage: "Sorry, Page Not Found" });
 });
 
