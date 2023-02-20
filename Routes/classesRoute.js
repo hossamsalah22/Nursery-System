@@ -1,18 +1,17 @@
 const express = require("express");
 const controller = require("./../Controller/classesController");
 const validation = require("./../Core/validations/validationMiddleWare");
-const postValidation = require("./../Core/validations/classesValidation/postValidation");
-const patchValidation = require("./../Core/validations/classesValidation/patchValidation");
+const classValidation = require("./../Validation/classesValidation");
 const router = express.Router();
 
 router
 	.route("/classes")
 	.get(controller.getAllClasses)
-	.post(postValidation, validation, controller.addClass)
-	.patch(patchValidation, validation, controller.updateClass)
-	.delete(controller.deleteClass);
-router.get("/classes/:id", controller.getClass);
-router.get("/classChildren/:id", controller.getClassChildren);
-router.get("/classTeacher/:id", controller.getClassTeacher);
+	.post(classValidation.postValidation, validation, controller.addClass)
+	.patch(classValidation.patchValidation, validation, controller.updateClass)
+	.delete(classValidation.deleteClass, validation, controller.deleteClass);
+router.get("/classes/:id", classValidation.validateClassId, validation, controller.getClass);
+router.get("/classChildren/:id", classValidation.validateChildId, validation, controller.getClassChildren);
+router.get("/classTeacher/:id", classValidation.validateTeacherId, validation, controller.getClassTeacher);
 
 module.exports = router;
