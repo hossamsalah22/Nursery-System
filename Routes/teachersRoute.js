@@ -1,15 +1,15 @@
 const express = require("express");
 const controller = require("./../Controller/teachersController");
 const validation = require("./../Core/validations/validationMiddleWare");
-const postValidation = require("./../Core/validations/teachersValidation/postValidation");
-const patchValidation = require("./../Core/validations/teachersValidation/patchValidation");
+const teachervalidation = require("./../Validation/teachersValidation");
 const router = express.Router();
 
 router
 	.route("/teachers")
 	.get(controller.getAllTeachers)
-	.post(postValidation, validation, controller.addTeacher)
-	.patch(patchValidation, validation, controller.updateTeacher)
-	.delete(controller.deleteTeacher);
+	.post(teachervalidation.postValidation, validation, controller.addTeacher)
+	.patch(teachervalidation.patchValidation, validation, controller.updateTeacher)
+	.delete(teachervalidation.deleteValidation, validation, controller.deleteTeacher);
+router.get("/teachers/:id", teachervalidation.getTeacherValidation, validation, controller.getTeacher);
 
 module.exports = router;

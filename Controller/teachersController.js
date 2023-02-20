@@ -13,3 +13,7 @@ exports.updateTeacher = (request, response, next) => {
 exports.deleteTeacher = (request, response, next) => {
 	response.status(200).json({ data: "Deleted" });
 };
+
+exports.getTeacher = (request, response) => {
+	response.status(200).json({ data: request.params.id });
+};
