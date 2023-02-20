@@ -12,6 +12,9 @@ server.listen(port, () => console.log(`listening on http://localhost:${port}`));
 server.use(cors());
 server.use(logger("dev"));
 
+server.use(express.json());
+server.use(express.urlencoded({ extended: false }));
+
 server.use(teacherRoute);
 server.use(childsRoute);
 server.use(classesRoute);
