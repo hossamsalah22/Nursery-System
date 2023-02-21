@@ -17,7 +17,5 @@ exports.patchValidation = [
 ];
 
 exports.validateClassId = [param("id").isNumeric().withMessage("Class Id should be Entered")];
-exports.validateTeacherId = [param("id").isMongoId().withMessage("Teacher Id should be Object")];
-exports.validateChildId = [param("id").isNumeric().withMessage("Child Id should be Entered")];
 
 exports.deleteClass = [body("id").isNumeric().withMessage("Class Id should be Entered")];

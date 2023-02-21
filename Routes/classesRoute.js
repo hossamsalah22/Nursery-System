@@ -11,7 +11,7 @@ router
 	.patch(classValidation.patchValidation, validation, controller.updateClass)
 	.delete(classValidation.deleteClass, validation, controller.deleteClass);
 router.get("/classes/:id", classValidation.validateClassId, validation, controller.getClass);
-router.get("/classChildren/:id", classValidation.validateChildId, validation, controller.getClassChildren);
-router.get("/classTeacher/:id", classValidation.validateTeacherId, validation, controller.getClassTeacher);
+router.get("/classChildren/:id", classValidation.validateClassId, validation, controller.getClassChildren);
+router.get("/classTeacher/:id", classValidation.validateClassId, validation, controller.getClassTeacher);
 
 module.exports = router;

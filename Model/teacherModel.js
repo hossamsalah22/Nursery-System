@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const schema = new mongoose.Schema({
-	_id: Object,
+	_id: mongoose.ObjectId,
 	fullName: { type: String, required: true },
 	password: { type: String, required: true },
 	email: {
