@@ -1,13 +1,24 @@
 const express = require("express");
 const cors = require("cors");
 const logger = require("morgan");
+const mongoose = require("mongoose");
 const teacherRoute = require("./Routes/teachersRoute");
 const childsRoute = require("./Routes/childsRoute");
 const classesRoute = require("./Routes/classesRoute");
 
 const port = process.env.PORT || 8080;
 const server = express();
-server.listen(port, () => console.log(`listening on http://localhost:${port}`));
+
+mongoose.set("strictQuery", true);
+mongoose
+	.connect("mongodb://127.0.0.1:27017/NurseryDB")
+	.then(() => {
+		console.log("BataBase Connection Success");
+		server.listen(port, () => console.log(`listening on http://localhost:${port}`));
+	})
+	.catch((error) => {
+		console.log("Connection Error: " + error);
+	});
 
 server.use(cors());
 server.use(logger("dev"));
