@@ -13,10 +13,14 @@ exports.getAllChilds = (request, response, next) => {
 		});
 };
 
-exports.getChild = (request, response) => {
+exports.getChild = (request, response, next) => {
 	ChildSchema.findById(request.params.id)
 		.then((data) => {
-			response.status(200).json({ data });
+			if (data == null) {
+				next(new Error("Child Not Found"));
+			} else {
+				response.status(200).json({ data });
+			}
 		})
 		.catch((error) => {
 			next(error);
@@ -67,12 +71,15 @@ exports.updateChild = (request, response, next) => {
 };
 
 exports.deleteChild = (request, response, next) => {
-	ChildSchema.findByIdAndDelete(request.body.id)
+	ChildSchema.deleteOne({ _id: request.body.id })
 		.then((data) => {
-			response.status(200).json({ data: "Deleted" });
+			if (data.deletedCount != 1) {
+				next(new Error("Child Not Found"));
+			} else {
+				response.status(200).json({ data: "Deleted" });
+			}
 		})
 		.catch((error) => {
 			next(error);
 		});
-	response.status(200).json({ data: "Deleted" });
 };

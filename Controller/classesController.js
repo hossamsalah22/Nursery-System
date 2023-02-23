@@ -5,17 +5,40 @@ const ClassSchema = mongoose.model("classes");
 const TeacherSchema = mongoose.model("teachers");
 const ChildSchema = mongoose.model("childrens");
 
-exports.getAllClasses = (request, response) => {
+const checkStudentsArray = async (request, result, next) => {
+	let existing = await ChildSchema.find({ _id: { $in: request.body.children } });
+	let notFound = request.body.children.filter((element) => {
+		if (!existing.find((e) => e._id === element)) return element;
+	});
+	return notFound;
+};
+
+exports.getAllClasses = (request, response, next) => {
 	ClassSchema.find({})
 		.populate({ path: "supervisor", select: { fullName: 1 } })
 		.populate({ path: "children", select: { fullName: 1 } })
 		.then((data) => {
 			response.status(200).json({ data });
+		})
+		.catch((error) => {
+			next(error);
 		});
 };
 
-exports.getClass = (request, response) => {
-	response.status(200).json({ data: request.params.id });
+exports.getClass = (request, response, next) => {
+	ClassSchema.findById({ _id: request.params.id })
+		.populate({ path: "supervisor", select: { fullName: 1 } })
+		.populate({ path: "children", select: { fullName: 1 } })
+		.then((data) => {
+			if (data == null) {
+				next(new Error("Class Not Found"));
+			} else {
+				response.status(200).json({ data });
+			}
+		})
+		.catch((error) => {
+			next(error);
+		});
 };
 
 exports.addClass = async (request, response, next) => {
@@ -23,6 +46,10 @@ exports.addClass = async (request, response, next) => {
 		let supervisor = await TeacherSchema.findOne({ _id: request.body.supervisor });
 		if (supervisor == null) {
 			throw new Error("Teacher Not Found");
+		}
+		let notFound = await checkStudentsArray(request, response, next);
+		if (notFound.length > 0) {
+			throw new Error("Childrens [" + notFound + "] Not Found");
 		}
 		let data = await new ClassSchema({
 			_id: request.body.id,
@@ -34,10 +61,37 @@ exports.addClass = async (request, response, next) => {
 	} catch (error) {
 		next(error);
 	}
-	response.status(201).json({ data: "Added" });
 };
 
-exports.updateClass = (request, response, next) => {
+exports.updateClass = async (request, response, next) => {
+	try {
+		let supervisor = await TeacherSchema.findOne({ _id: request.body.supervisor });
+		if (supervisor == null) {
+			throw new Error("Teacher Not Found");
+		}
+		let notFound = await checkStudentsArray(request, response, next);
+		if (notFound.length > 0) {
+			throw new Error("Childrens [" + notFound + "] Not Found");
+		}
+		const data = await new ClassShcema.updateOne(
+			{
+				_id: req.params._id,
+			},
+			{
+				$set: {
+					name: req.body.name,
+					supervisor: req.body.supervisor,
+					children: req.body.children,
+				},
+			}
+		);
+		if (data.modifiedCount == 0) {
+			throw new Error("not found this class");
+		}
+		res.status(200).json({ data });
+	} catch (error) {
+		next(error);
+	}
 	response.status(200).json({ data: "Updated" });
 };
 

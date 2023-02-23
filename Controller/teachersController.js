@@ -60,19 +60,29 @@ exports.updateTeacher = (request, response, next) => {
 };
 
 exports.deleteTeacher = (request, response, next) => {
-	TeacherSchema.findByIdAndDelete(request.body.id)
+	TeacherSchema.deleteOne({ _id: request.body.id })
 		.then((data) => {
-			response.status(200).json({ data: "Deleted" });
+			// console.log(data);
+			if (data.deletedCount != 1) {
+				next(new Error("Teacher Not Found"));
+			} else {
+				response.status(200).json({ data: "Deleted" });
+			}
 		})
 		.catch((error) => {
 			next(error);
 		});
 };
 
-exports.getTeacher = (request, response) => {
+exports.getTeacher = (request, response, next) => {
 	TeacherSchema.findById(request.params.id)
 		.then((data) => {
-			response.status(200).json({ data });
+			console.log(data);
+			if (data == null) {
+				next(new Error("Teacher Not Found"));
+			} else {
+				response.status(200).json({ data });
+			}
 		})
 		.catch((error) => {
 			next(error);

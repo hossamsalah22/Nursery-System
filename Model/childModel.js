@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const AutoIncrement = require("mongoose-sequence")(mongoose);
 
 const addressSchema = new mongoose.Schema({
 	city: { type: String, required: true },
@@ -14,5 +15,7 @@ const schema = new mongoose.Schema({
 	level: { type: String, required: true },
 	address: { type: addressSchema, required: true },
 });
+
+schema.plugin(AutoIncrement, { id: "child_id", inc_field: "_id" });
 
 mongoose.model("childrens", schema);
