@@ -96,13 +96,48 @@ exports.updateClass = async (request, response, next) => {
 };
 
 exports.deleteClass = (request, response, next) => {
-	response.status(200).json({ data: "Deleted" });
+	ClassSchema.deleteOne({ _id: request.body.id })
+		.then((data) => {
+			// console.log(data);
+			if (data.deletedCount != 1) {
+				next(new Error("Class Not Found"));
+			} else {
+				response.status(200).json({ data: "Deleted" });
+			}
+		})
+		.catch((error) => {
+			next(error);
+		});
 };
 
-exports.getClassChildren = (request, response) => {
-	response.status(200).json({ data: request.params.id });
+exports.getClassChildren = (request, response, next) => {
+	ClassSchema.findOne({ _id: request.params.id }, { children: 1 })
+		.populate({ path: "children", select: { fullName: 1 } })
+		.then((data) => {
+			// console.log(data);
+			if (data == null) {
+				next(new Error("Cannot Find Class"));
+			} else {
+				response.status(200).json({ data });
+			}
+		})
+		.catch((error) => {
+			next(error);
+		});
 };
 
-exports.getClassTeacher = (request, response) => {
-	response.status(200).json({ data: request.params.id });
+exports.getClassTeacher = (request, response, next) => {
+	ClassSchema.findOne({ _id: request.params.id }, { supervisor: 1 })
+		.populate({ path: "supervisor", select: { fullName: 1 } })
+		.then((data) => {
+			// console.log(data);
+			if (data == null) {
+				next(new Error("Canot Find Class"));
+			} else {
+				response.status(200).json({ data });
+			}
+		})
+		.catch((error) => {
+			next(error);
+		});
 };
