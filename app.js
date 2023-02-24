@@ -5,7 +5,8 @@ const mongoose = require("mongoose");
 const teacherRoute = require("./Routes/teachersRoute");
 const childsRoute = require("./Routes/childsRoute");
 const classesRoute = require("./Routes/classesRoute");
-
+const loginRoute = require("./Routes/loginRoute");
+const authMW = require("./Core/auth/authenticationMiddleWare");
 const port = process.env.PORT || 8080;
 const server = express();
 
@@ -26,6 +27,8 @@ server.use(logger("dev"));
 server.use(express.json());
 server.use(express.urlencoded({ extended: false }));
 
+server.use(loginRoute);
+server.use(authMW);
 server.use(teacherRoute);
 server.use(childsRoute);
 server.use(classesRoute);

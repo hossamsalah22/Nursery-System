@@ -34,29 +34,35 @@ exports.addTeacher = (request, response, next) => {
 
 exports.updateTeacher = (request, response, next) => {
 	let hashedPass = request.body.password ? bcrypt.hashSync(request.body.password, salt) : request.body.password;
-	TeacherSchema.updateOne(
-		{
-			_id: request.body.id,
-		},
-		{
-			$set: {
-				fullName: request.body.fullName,
-				password: hashedPass,
-				email: request.body.email,
-				image: request.body.image,
+	if (request.body.id != request.id) {
+		let error = new Error("Not Authenticated");
+		error.status = 401;
+		next(error);
+	} else {
+		TeacherSchema.updateOne(
+			{
+				_id: request.body.id,
 			},
-		}
-	)
-		.then((data) => {
-			if (data.matchedCount == 0) {
-				next(new Error("Teacher Not Found"));
-			} else {
-				response.status(200).json({ data: "Updated" });
+			{
+				$set: {
+					fullName: request.body.fullName,
+					password: hashedPass,
+					email: request.body.email,
+					image: request.body.image,
+				},
 			}
-		})
-		.catch((error) => {
-			next(error);
-		});
+		)
+			.then((data) => {
+				if (data.matchedCount == 0) {
+					next(new Error("Teacher Not Found"));
+				} else {
+					response.status(200).json({ data: "Updated" });
+				}
+			})
+			.catch((error) => {
+				next(error);
+			});
+	}
 };
 
 exports.deleteTeacher = (request, response, next) => {
