@@ -6,15 +6,9 @@ const salt = bcrypt.genSaltSync(saltRounds);
 require("./../Model/teacherModel");
 const TeacherSchema = mongoose.model("teachers");
 
-const checkTeacherPassword = async (password, passwordHash) => {
-	const match = await bcrypt.compare(password, passwordHash);
-	if (match) return true;
-	return false;
-};
-
 exports.login = (request, response, next) => {
 	if (request.body.fullName == "admin" && request.body.password == "123456") {
-		let token = jwt.sign({ id: 1, role: "admin" }, "ITI", { expiresIn: "1h" });
+		let token = jwt.sign({ id: 1, role: "admin" }, "ITI", { expiresIn: "2h" });
 		response.status(200).json({ message: "Authenticated", token });
 	} else {
 		TeacherSchema.findOne({ fullName: request.body.fullName })
