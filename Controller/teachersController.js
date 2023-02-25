@@ -18,6 +18,9 @@ exports.getAllTeachers = (request, response, next) => {
 };
 
 exports.addTeacher = (request, response, next) => {
+	if (request.file && request.file.path) {
+		request.body.image = request.file.path;
+	}
 	new TeacherSchema({
 		_id: request.body.id,
 		fullName: request.body.fullName,
@@ -25,7 +28,7 @@ exports.addTeacher = (request, response, next) => {
 		email: request.body.email,
 		image: request.body.image,
 	})
-		.save() //insertOne
+		.save()
 		.then((data) => {
 			response.status(201).json({ data });
 		})
@@ -39,6 +42,9 @@ exports.updateTeacher = (request, response, next) => {
 		error.status = 401;
 		next(error);
 	} else {
+		if (request.file && request.file.path) {
+			request.body.image = request.file.path;
+		}
 		TeacherSchema.updateOne(
 			{
 				_id: request.body.id,

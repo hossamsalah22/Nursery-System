@@ -9,7 +9,7 @@ const schema = new mongoose.Schema({
 		match: [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, "Please fill a valid email address"],
 		required: true,
 	},
-	image: String,
+	image: { type: String, required: true },
 });
 
 mongoose.model("teachers", schema);

@@ -5,7 +5,7 @@ exports.postValidation = [
 	body("fullName").isString().withMessage("Teacher Name should be string"),
 	body("password").isString().withMessage("Password Must Be Hybird").isLength({ Min: 4 }).withMessage("Password must be > 8"),
 	body("email").isEmail().withMessage("Email is Invalid"),
-	body("image").isString().withMessage("Image is Invalid"),
+	body("image").optional().isString().withMessage("Image is Invalid"),
 ];
 
 exports.patchValidation = [
