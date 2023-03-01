@@ -26,6 +26,7 @@ const uploadImage = multer({
 		},
 	}),
 });
+//size
 
 const router = express.Router();
 

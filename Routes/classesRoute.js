@@ -2,7 +2,7 @@ const express = require("express");
 const controller = require("./../Controller/classesController");
 const validation = require("./../Core/validations/validationMiddleWare");
 const classValidation = require("./../Validation/classesValidation");
-const { checkAdmin } = require("./../Core/auth/authenticationMiddleWare");
+const { checkAdmin, checkTeacherAndAdmin } = require("./../Core/auth/authenticationMiddleWare");
 const router = express.Router();
 
 router
